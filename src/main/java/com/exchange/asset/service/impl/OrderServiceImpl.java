@@ -32,14 +32,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ConvertOrder getOrder(String symbol) {
         log.info("Fetching order: symbol={}", symbol);
-//        if (!orders.containsKey(symbol)) {
-//            ErrorCode errorCode = ErrorCode.ORDER_NOT_FOUND;
-//            String userMsg = messageTranslationService.getMessage(errorCode.getErrorCode(), new Object[]{symbol});
-//            throw new AppException(errorCode, userMsg);
-//        }
+        if (!orders.containsKey(symbol)) {
+            ErrorCode errorCode = ErrorCode.ORDER_NOT_FOUND;
+            String userMsg = messageTranslationService.getMessage(errorCode.getErrorCode(), new Object[]{symbol});
+            throw new AppException(errorCode, userMsg);
+        }
         Asset asset = assetFacade.getAsset(symbol);
-        System.out.println(asset);
         ConvertOrder order = orders.get(symbol);
+        order.setPrice(asset.getPrice());
+        order.setAmount(asset.getPrice()*order.getQuantity());
         log.info("Fetched order: order={}", order);
         return order;
     }
