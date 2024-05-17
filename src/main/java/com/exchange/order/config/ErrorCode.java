@@ -1,4 +1,4 @@
-package com.exchange.asset.config;
+package com.exchange.order.config;
 
 import lombok.Getter;
 

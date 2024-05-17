@@ -1,6 +1,6 @@
-package com.exchange.asset.service;
+package com.exchange.order.service;
 
-import com.exchange.asset.domain.ConvertOrder;
+import com.exchange.order.domain.ConvertOrder;
 
 public interface OrderService {
 

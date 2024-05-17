@@ -1,6 +1,6 @@
-package com.exchange.asset.service.impl;
+package com.exchange.order.service.impl;
 
-import com.exchange.asset.config.AppProps;
+import com.exchange.order.config.AppProps;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

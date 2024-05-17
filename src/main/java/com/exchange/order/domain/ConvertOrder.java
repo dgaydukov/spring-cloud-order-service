@@ -1,4 +1,4 @@
-package com.exchange.asset.domain;
+package com.exchange.order.domain;
 
 import lombok.Data;
 

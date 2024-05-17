@@ -1,6 +1,6 @@
-package com.exchange.asset.service;
+package com.exchange.order.service;
 
-import com.exchange.asset.service.impl.MessageTranslationServiceImpl;
+import com.exchange.order.service.impl.MessageTranslationServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

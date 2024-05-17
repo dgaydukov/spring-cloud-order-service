@@ -1,4 +1,4 @@
-package com.exchange.asset.service;
+package com.exchange.order.service;
 
 import org.junit.jupiter.api.BeforeEach;
 

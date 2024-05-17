@@ -1,7 +1,7 @@
-package com.exchange.asset.config;
+package com.exchange.order.config;
 
-import com.exchange.asset.domain.AppError;
-import com.exchange.asset.exception.AppException;
+import com.exchange.order.domain.AppError;
+import com.exchange.order.exception.AppException;
 import io.micrometer.tracing.Tracer;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

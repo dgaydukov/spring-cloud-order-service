@@ -1,6 +1,6 @@
-package com.exchange.asset.exception;
+package com.exchange.order.exception;
 
-import com.exchange.asset.config.ErrorCode;
+import com.exchange.order.config.ErrorCode;
 import lombok.Getter;
 
 @Getter
