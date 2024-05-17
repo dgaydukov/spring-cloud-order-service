@@ -14,7 +14,7 @@ public class OrderController {
 
     @PostMapping
     public void addOrder(@RequestBody ConvertOrder order) {
-        orderService.addOrder(order.getSymbol(), order.getQuantity());
+        orderService.addOrder(order);
     }
 
     @GetMapping("/{symbol}")

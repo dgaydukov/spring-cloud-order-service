@@ -4,7 +4,7 @@ import com.exchange.asset.domain.ConvertOrder;
 
 public interface OrderService {
 
-    void addOrder(String symbol, double quantity);
+    void addOrder(ConvertOrder order);
 
     ConvertOrder getOrder(String symbol);
 }
