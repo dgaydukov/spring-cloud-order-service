@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    PRICE_NOT_FOUND(10101, "price_not_found"),
-    ORDER_NOT_FOUND(10102, "order_not_found");
+    FAILED_TO_PROCESS_REQUEST(101000, "failed_to_process_request"),
+    ORDER_NOT_FOUND(101001, "order_not_found");
 
     private int code;
     private String errorCode;

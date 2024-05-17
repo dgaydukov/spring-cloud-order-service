@@ -46,6 +46,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
             <groupId>org.springframework.boot</groupId>
         </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-micrometer</artifactId>
+            <version>13.2.1</version>
+        </dependency>
+
 
         <dependency>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>

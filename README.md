@@ -4,7 +4,7 @@
 Below is example how you can call 2 API endpoints here
 ```shell
 # create new order
-curl -H 'content-type: application/json' -d '{"symbol":"BTC","quantity":1}' http://localhost:8082/order/BTC
+curl -H 'content-type: application/json' -d '{"symbol":"BTC","quantity":5}' http://localhost:8082/order
 # get order by symbol
 curl -H 'content-type: application/json' http://localhost:8082/order/BTC
 ```
