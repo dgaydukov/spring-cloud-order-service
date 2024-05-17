@@ -49,9 +49,9 @@ public class OrderServiceImpl implements OrderService {
             ObjectMapper mapper = new ObjectMapper();
             try{
                 AppError appError = mapper.readValue(errorResponseBody, AppError.class);
-                log.error("Failed to fetch price: appError={}", appError);
+                log.error("Failed to fetch price: symbol={}, appError={}", symbol, appError);
             } catch (JsonProcessingException ex2){
-                log.error("Failed to parse response body: body={}", errorResponseBody);
+                log.error("Failed to parse response body: symbol={}, body={}", symbol, errorResponseBody);
             }
             ErrorCode errorCode = ErrorCode.FAILED_TO_PROCESS_REQUEST;
             String userMsg = messageTranslationService.getMessage(errorCode.getErrorCode());
