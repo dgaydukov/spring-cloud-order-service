@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: asset-service
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        server-addr: ${NACOS_SERVER_IP}:8848
+        namespace: ${NACOS_SERVER_ID}
+      config:
+        enabled: true
+        server-addr: ${NACOS_SERVER_IP}:8848
+        namespace: ${NACOS_SERVER_ID}
+        file-extension: properties
+        refreshable-dataids: ${spring.application.name}.properties
