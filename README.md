@@ -1,4 +1,4 @@
-# Asset-service
+# Order-service
 
 ### How to use
 Below is example how you can call 2 API endpoints here
@@ -47,17 +47,3 @@ c.e.a.service.impl.ConfigPrinterService  : configEnv=test
 ```
 
 ### Returning traceId to customer
-If you make a call to get price for an asset that doesn't have a price, then `AppException` is thrown, which is caught by exception handler and user-friendly error returned with traceId
-```shell
-# call api endpoint for asset that doesn't have a price
-curl -H 'content-type: application/json' -H 'Accept-Language: abc' http://localhost:8081/asset/price/ABC
-{"code":10101,"errorCode":"price_not_found","msg":"Failed to fetch the price for ABC","traceId":"6647118032e03d55c7fa5d9a29442502"}
-```
-Now you can check the logs for this traceId, as you can see, now you can identify and link exact user to exact error in your logs.
-```
-2024-05-17 12:12:48.186 [asset-service] [http-nio-8081-exec-2] [6647118032e03d55c7fa5d9a29442502,c7fa5d9a29442502]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=ABC
-2024-05-17 12:12:48.204 [asset-service] [http-nio-8081-exec-2] [6647118032e03d55c7fa5d9a29442502,c7fa5d9a29442502]  ERROR c.e.a.config.RestResponseEntityExceptionHandler - catch AppException: url=/asset/price/ABC
-com.exchange.asset.exception.AppException: price_not_found
-	at com.exchange.asset.service.impl.PriceServiceImpl.getPrice(PriceServiceImpl.java:34)
-	at com.exchange.asset.controllers.PriceController.getPrice(PriceController.java:24)
-```

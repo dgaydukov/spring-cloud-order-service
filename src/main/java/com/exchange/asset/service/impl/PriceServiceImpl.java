@@ -3,7 +3,7 @@ package com.exchange.asset.service.impl;
 import com.exchange.asset.config.ErrorCode;
 import com.exchange.asset.exception.AppException;
 import com.exchange.asset.service.MessageTranslationService;
-import com.exchange.asset.service.PriceService;
+import com.exchange.asset.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PriceServiceImpl implements PriceService {
+public class PriceServiceImpl implements OrderService {
     private final MessageTranslationService messageTranslationService;
 
     private Map<String, Double> prices = new HashMap<>();

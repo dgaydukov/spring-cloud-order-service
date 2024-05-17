@@ -10,9 +10,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableAutoConfiguration
 @EnableFeignClients
 @EnableDiscoveryClient
-public class AssetService {
+public class OrderService {
 
     public static void main(String[] args) {
-        SpringApplication.run(AssetService.class, args);
+        SpringApplication.run(OrderService.class, args);
     }
 }
