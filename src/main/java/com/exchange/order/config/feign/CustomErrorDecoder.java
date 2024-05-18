@@ -17,7 +17,7 @@ public class CustomErrorDecoder implements ErrorDecoder {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public Exception decode(String methodKey, Response response) {
+    public Exception decode(String method, Response response) {
         String requestUrl = response.request().url();
         HttpStatus status = HttpStatus.valueOf(response.status());
 
@@ -27,6 +27,7 @@ public class CustomErrorDecoder implements ErrorDecoder {
         } catch (IOException ex){
             log.error("Failed to convert body InputStream into string: requestUrl={}", requestUrl);
         }
+        log.warn("Catch feign error: method={}, requestUrl={}, body={}", method, requestUrl, body);
         if (status.is4xxClientError()){
             try{
                 AppError appError = objectMapper.readValue(body, AppError.class);

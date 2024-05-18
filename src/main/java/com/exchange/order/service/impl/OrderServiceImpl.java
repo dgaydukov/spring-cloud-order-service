@@ -1,16 +1,12 @@
 package com.exchange.order.service.impl;
 
 import com.exchange.order.config.ErrorCode;
-import com.exchange.order.domain.AppError;
 import com.exchange.order.domain.Asset;
 import com.exchange.order.domain.ConvertOrder;
 import com.exchange.order.exception.AppException;
 import com.exchange.order.facade.AssetFacade;
 import com.exchange.order.service.MessageTranslationService;
 import com.exchange.order.service.OrderService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +21,7 @@ public class OrderServiceImpl implements OrderService {
     private final MessageTranslationService messageTranslationService;
     private final AssetFacade assetFacade;
 
-    private Map<String, ConvertOrder> orders = new HashMap<>();
+    private final Map<String, ConvertOrder> orders = new HashMap<>();
 
     @Override
     public void addOrder(ConvertOrder order) {
@@ -41,8 +37,8 @@ public class OrderServiceImpl implements OrderService {
             String userMsg = messageTranslationService.getMessage(errorCode.getErrorCode(), new Object[]{symbol});
             throw new AppException(errorCode, userMsg);
         }
-        Asset asset = assetFacade.getAsset(symbol);
         ConvertOrder order = orders.get(symbol);
+        Asset asset = assetFacade.getAsset(symbol);
         order.setPrice(asset.getPrice());
         order.setAmount(asset.getPrice()*order.getQuantity());
         log.info("Fetched order: order={}", order);
