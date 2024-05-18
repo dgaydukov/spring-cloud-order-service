@@ -45,3 +45,22 @@ change config while the app is running, the app will pick-up the change and disp
 ```
 
 ### Returning traceId to customer
+Below I wll show 2 log traces for same traceId, positive & negative use case
+Positive use-case
+```
+# create price
+curl -H 'content-type: application/json' -d '{"symbol":"BTC","price":100}' http://localhost:8081/asset/price
+# create order
+curl -H 'content-type: application/json' -d '{"symbol":"BTC","quantity":5}' http://localhost:8082/order
+# fetch order
+curl -H 'content-type: application/json' http://localhost:8082/order/BTC
+
+{"symbol":"BTC","quantity":5.0,"price":100.0,"amount":500.0}
+
+# order-service logs
+2024-05-18 19:11:52.123 [order-service] [http-nio-8082-exec-6] [6648c5388dafecc4175d55639785a706,175d55639785a706]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetching order: symbol=BTC
+2024-05-18 19:11:52.138 [order-service] [http-nio-8082-exec-6] [6648c5388dafecc4175d55639785a706,175d55639785a706]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetched order: order=ConvertOrder(symbol=BTC, quantity=5.0, price=100.0, amount=500.0)
+# asset-service logs
+2024-05-18 19:11:52.134 [asset-service] [http-nio-8081-exec-5] [6648c5388dafecc4175d55639785a706,9f7a8e1805b24024]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
+2024-05-18 19:11:52.134 [asset-service] [http-nio-8081-exec-5] [6648c5388dafecc4175d55639785a706,9f7a8e1805b24024]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetched price for: symbol=BTC, price=100.0
+```
