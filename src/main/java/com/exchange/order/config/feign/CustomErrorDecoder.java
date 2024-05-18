@@ -1,6 +1,9 @@
 package com.exchange.order.config.feign;
 
-import com.exchange.order.exception.ApiGenericException;
+import com.exchange.order.config.ErrorCode;
+import com.exchange.order.domain.AppError;
+import com.exchange.order.exception.AppException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
@@ -24,14 +27,14 @@ public class CustomErrorDecoder implements ErrorDecoder {
         } catch (IOException ex){
             log.error("Failed to convert body InputStream into string: requestUrl={}", requestUrl);
         }
-
-//        if (status.is5xxServerError()) {
-//            return new ApiServerException(requestUrl, body);
-//        } else if (status.is4xxClientError()) {
-//            return new ApiClientException(requestUrl, body);
-//        } else {
-//            return new ApiGenericException(requestUrl, body);
-//        }
-        return new ApiGenericException(requestUrl, body);
+        if (status.is4xxClientError()){
+            try{
+                AppError appError = objectMapper.readValue(body, AppError.class);
+                return new AppException(appError.getCode(), appError.getErrorCode(), appError.getMsg());
+            } catch (JsonProcessingException ex){
+                log.error("Failed to convert body String into object: requestUrl={}, body={}", requestUrl, body);
+            }
+        }
+        return new AppException(ErrorCode.FAILED_TO_PROCESS_REQUEST, null);
     }
 }

@@ -41,22 +41,7 @@ public class OrderServiceImpl implements OrderService {
             String userMsg = messageTranslationService.getMessage(errorCode.getErrorCode(), new Object[]{symbol});
             throw new AppException(errorCode, userMsg);
         }
-        Asset asset;
-        try{
-            asset = assetFacade.getAsset(symbol);
-        } catch (FeignException ex){
-            String errorResponseBody = ex.contentUTF8();
-            ObjectMapper mapper = new ObjectMapper();
-            try{
-                AppError appError = mapper.readValue(errorResponseBody, AppError.class);
-                log.error("Failed to fetch price: symbol={}, appError={}", symbol, appError);
-            } catch (JsonProcessingException ex2){
-                log.error("Failed to parse response body: symbol={}, body={}", symbol, errorResponseBody);
-            }
-            ErrorCode errorCode = ErrorCode.FAILED_TO_PROCESS_REQUEST;
-            String userMsg = messageTranslationService.getMessage(errorCode.getErrorCode());
-            throw new AppException(errorCode, userMsg);
-        }
+        Asset asset = assetFacade.getAsset(symbol);
         ConvertOrder order = orders.get(symbol);
         order.setPrice(asset.getPrice());
         order.setAmount(asset.getPrice()*order.getQuantity());
