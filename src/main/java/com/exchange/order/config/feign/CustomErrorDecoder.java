@@ -5,7 +5,9 @@ import com.exchange.order.domain.AppError;
 import com.exchange.order.exception.AppException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import feign.Response;
+import feign.RetryableException;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,7 +29,17 @@ public class CustomErrorDecoder implements ErrorDecoder {
         } catch (IOException ex){
             log.error("Failed to convert body InputStream into string: requestUrl={}", requestUrl);
         }
-        log.warn("Catch feign error: method={}, requestUrl={}, body={}", method, requestUrl, body);
+        String requestBody = null;
+        if (response.request().body() != null){
+            requestBody = new String(response.request().body());
+        }
+        log.warn("Catch feign error: method={}, requestUrl={}, requestBody={}, body={}",
+                method, requestUrl, requestBody, body);
+        if (status.is5xxServerError()){
+            FeignException ex = feign.FeignException.errorStatus(method, response);
+            return new RetryableException(response.status(), ex.getMessage(),
+                    response.request().httpMethod(), ex, 0L, response.request());
+        }
         if (status.is4xxClientError()){
             try{
                 AppError appError = objectMapper.readValue(body, AppError.class);
