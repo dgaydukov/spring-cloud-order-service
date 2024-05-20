@@ -88,13 +88,27 @@ com.exchange.asset.exception.AppException: price_not_found
 ```
 
 ### Feign retry example
-If you look into our `FeignClientConfiguration` and `CustomErrorDecoder` you will notice that we have added `Retryer` for 5xx errors. That means if we get 5xx then we would retry for 5 times. We have this limitation of 5, because if we get 5xx error more then 5 times, that means something wrong with client server, and there is no point to try to call more.
-You can observe the logs example. On asset-service side, it's implemeted by randomly throwing `RuntimeException`.
-```shell
-2024-05-20 12:40:49.208 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetching order: symbol=BTC
-2024-05-20 12:40:49.234 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price/BTC, requestBody=null, body={"timestamp":"2024-05-20T08:40:49.227+00:00","status":500,"error":"Internal Server Error","path":"/asset/price/BTC"}
-2024-05-20 12:40:49.241 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price/BTC, requestBody=null, body={"timestamp":"2024-05-20T08:40:49.240+00:00","status":500,"error":"Internal Server Error","path":"/asset/price/BTC"}
-2024-05-20 12:40:49.245 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price/BTC, requestBody=null, body={"timestamp":"2024-05-20T08:40:49.244+00:00","status":500,"error":"Internal Server Error","path":"/asset/price/BTC"}
-2024-05-20 12:40:49.253 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price/BTC, requestBody=null, body={"timestamp":"2024-05-20T08:40:49.252+00:00","status":500,"error":"Internal Server Error","path":"/asset/price/BTC"}
-2024-05-20 12:40:49.256 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetched order: order=ConvertOrder(symbol=BTC, quantity=5.0, price=100.0, amount=500.0)
+If you look into our `FeignClientConfiguration` and `CustomErrorDecoder` you will notice that we have added `Retryer` for 5xx errors. That means if we get 5xx then we would retry for 5 times. We have this limitation of 5, because if we get 5xx error more than 5 times, that means something wrong with client server, and there is no point to try to call more.
+You can observe the logs example. On asset-service side, it's implemented by randomly throwing `RuntimeException`.
+```
+# order-service
+2024-05-20 13:31:52.534 [order-service] [http-nio-8082-exec-1] [664b188846f92a418daaea35619bb796,8daaea35619bb796]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetching order: symbol=BTC
+2024-05-20 13:31:52.566 [order-service] [http-nio-8082-exec-1] [664b188846f92a418daaea35619bb796,8daaea35619bb796]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price2/BTC, requestBody=null, body={"timestamp":"2024-05-20T09:31:52.556+00:00","status":500,"error":"Internal Server Error","path":"/asset/price2/BTC"}
+2024-05-20 13:31:52.572 [order-service] [http-nio-8082-exec-1] [664b188846f92a418daaea35619bb796,8daaea35619bb796]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price2/BTC, requestBody=null, body={"timestamp":"2024-05-20T09:31:52.571+00:00","status":500,"error":"Internal Server Error","path":"/asset/price2/BTC"}
+2024-05-20 13:31:52.583 [order-service] [http-nio-8082-exec-1] [664b188846f92a418daaea35619bb796,8daaea35619bb796]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetched order: order=ConvertOrder(symbol=BTC, quantity=5.0, price=100.0, amount=500.0)
+
+# asset-service
+2024-05-20 13:31:52.546 [asset-service] [http-nio-8081-exec-3] [664b188846f92a418daaea35619bb796,9d3c5c7a5b3ae71c]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
+2024-05-20 13:31:52.548 [asset-service] [http-nio-8081-exec-3] [,]  ERROR o.a.c.c.C.[.[localhost].[/].[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.RuntimeException: server_error] with root cause
+java.lang.RuntimeException: server_error
+	at com.exchange.asset.service.impl.PriceServiceImpl.throwRandomException(PriceServiceImpl.java:58)
+	at com.exchange.asset.service.impl.PriceServiceImpl.getPrice2(PriceServiceImpl.java:49)
+2024-05-20 13:31:52.569 [asset-service] [http-nio-8081-exec-4] [664b188846f92a418daaea35619bb796,a8faee3056c8456c]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
+2024-05-20 13:31:52.570 [asset-service] [http-nio-8081-exec-4] [,]  ERROR o.a.c.c.C.[.[localhost].[/].[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.RuntimeException: server_error] with root cause
+java.lang.RuntimeException: server_error
+	at com.exchange.asset.service.impl.PriceServiceImpl.throwRandomException(PriceServiceImpl.java:58)
+	at com.exchange.asset.service.impl.PriceServiceImpl.getPrice2(PriceServiceImpl.java:49)
+2024-05-20 13:31:52.576 [asset-service] [http-nio-8081-exec-5] [664b188846f92a418daaea35619bb796,57f565c8e01f4118]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
+2024-05-20 13:31:52.576 [asset-service] [http-nio-8081-exec-5] [664b188846f92a418daaea35619bb796,57f565c8e01f4118]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetched price for: symbol=BTC, price=100.0
+
 ```

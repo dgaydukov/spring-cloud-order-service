@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
         ConvertOrder order = orders.get(symbol);
         Asset asset = assetFacade.getAsset(symbol);
         order.setPrice(asset.getPrice());
-        order.setAmount(asset.getPrice()*order.getQuantity());
+        order.setAmount(asset.getPrice() * order.getQuantity());
         log.info("Fetched order: order={}", order);
         return order;
     }
