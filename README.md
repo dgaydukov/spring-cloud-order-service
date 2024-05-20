@@ -86,3 +86,15 @@ com.exchange.asset.exception.AppException: price_not_found
 	at com.exchange.asset.service.impl.PriceServiceImpl.getPrice(PriceServiceImpl.java:34)
 	at com.exchange.asset.controllers.PriceController.getPrice(PriceController.java:24)
 ```
+
+### Feign retry example
+If you look into our `FeignClientConfiguration` and `CustomErrorDecoder` you will notice that we have added `Retryer` for 5xx errors. That means if we get 5xx then we would retry for 5 times. We have this limitation of 5, because if we get 5xx error more then 5 times, that means something wrong with client server, and there is no point to try to call more.
+You can observe the logs example. On asset-service side, it's implemeted by randomly throwing `RuntimeException`.
+```shell
+2024-05-20 12:40:49.208 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetching order: symbol=BTC
+2024-05-20 12:40:49.234 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price/BTC, requestBody=null, body={"timestamp":"2024-05-20T08:40:49.227+00:00","status":500,"error":"Internal Server Error","path":"/asset/price/BTC"}
+2024-05-20 12:40:49.241 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price/BTC, requestBody=null, body={"timestamp":"2024-05-20T08:40:49.240+00:00","status":500,"error":"Internal Server Error","path":"/asset/price/BTC"}
+2024-05-20 12:40:49.245 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price/BTC, requestBody=null, body={"timestamp":"2024-05-20T08:40:49.244+00:00","status":500,"error":"Internal Server Error","path":"/asset/price/BTC"}
+2024-05-20 12:40:49.253 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price/BTC, requestBody=null, body={"timestamp":"2024-05-20T08:40:49.252+00:00","status":500,"error":"Internal Server Error","path":"/asset/price/BTC"}
+2024-05-20 12:40:49.256 [order-service] [http-nio-8082-exec-9] [664b0c910c8c5e5dd37d55b972d7004e,d37d55b972d7004e]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetched order: order=ConvertOrder(symbol=BTC, quantity=5.0, price=100.0, amount=500.0)
+```
