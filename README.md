@@ -14,11 +14,20 @@ We have automatic support for multiple language, just call
 ```shell
 # get error in Spanish language
 curl -H 'content-type: application/json' -H 'Accept-Language: es' http://localhost:8082/order/BTC
-
+# because order doesn't exist, order-service will return error in Spanish
 {"code":101001,"errorCode":"order_not_found","msg":"No se pudo recuperar el pedido de BTC","traceId":"6648c3d780451313f7b2a1fb189be993"}
 ```
 No additional configuration to support it required, it works out-of-the-box, this header `Accept-Language` would
 automatically put correct language into `LocaleContextHolder`.
+We have even added `FeignRequestInterceptor` to forward language headers, and not we have intra-service i18n support, because your headers forwarded to other services.
+```shell
+# create order
+curl -H 'content-type: application/json' -d '{"symbol":"BTC","quantity":5}' http://localhost:8082/order
+# get order by symbol 
+curl -H 'content-type: application/json' -H 'Accept-Language: es' http://localhost:8082/order/BTC
+# because there is no price, asset-service will return error in Spanish
+{"code":100001,"errorCode":"price_not_found","msg":"No se pudo obtener el precio de BTC","traceId":"664c4c5ec5ccd48d0962891a035a3df6"}
+```
 
 ### Nacos config
 Make sure your nacos server is running and you pass it's IP into config variables. If you try to run
