@@ -40,7 +40,7 @@ NACOS_SERVER_ID=31b66f4e-dbf4-4745-a359-2d9701f436e5;
 ### Nacos config hot reload
 With nacos config management you can hot-reload your env variables without the need to restart the app.
 To demonstrate this you can take a look into `ConfigPrinterService` where each 10 sec env var is printed, yet if we
-change config while the app is running, the app will pick-up the change and display correct value. Belos is an example.
+change config while the app is running, the app will pickup the change and display correct value. Belos is an example.
 ```
 # logs from running app (old config data)
 2024-05-18 19:06:19.339 [order-service] [Thread-8] [,]  INFO  c.exchange.order.service.impl.ConfigPrinterService - configEnv=test
@@ -56,7 +56,7 @@ change config while the app is running, the app will pick-up the change and disp
 ### Returning traceId to customer
 Below I wll show 2 log traces for same traceId, positive & negative use case
 Positive use-case
-```
+```shell
 # create price
 curl -H 'content-type: application/json' -d '{"symbol":"BTC","price":100}' http://localhost:8081/asset/price
 # create order
@@ -101,23 +101,22 @@ If you look into our `FeignClientConfiguration` and `CustomErrorDecoder` you wil
 You can observe the logs example. On asset-service side, it's implemented by randomly throwing `RuntimeException`.
 ```
 # order-service
-2024-05-20 13:31:52.534 [order-service] [http-nio-8082-exec-1] [664b188846f92a418daaea35619bb796,8daaea35619bb796]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetching order: symbol=BTC
-2024-05-20 13:31:52.566 [order-service] [http-nio-8082-exec-1] [664b188846f92a418daaea35619bb796,8daaea35619bb796]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price2/BTC, requestBody=null, body={"timestamp":"2024-05-20T09:31:52.556+00:00","status":500,"error":"Internal Server Error","path":"/asset/price2/BTC"}
-2024-05-20 13:31:52.572 [order-service] [http-nio-8082-exec-1] [664b188846f92a418daaea35619bb796,8daaea35619bb796]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price2/BTC, requestBody=null, body={"timestamp":"2024-05-20T09:31:52.571+00:00","status":500,"error":"Internal Server Error","path":"/asset/price2/BTC"}
-2024-05-20 13:31:52.583 [order-service] [http-nio-8082-exec-1] [664b188846f92a418daaea35619bb796,8daaea35619bb796]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetched order: order=ConvertOrder(symbol=BTC, quantity=5.0, price=100.0, amount=500.0)
+2024-05-21 12:37:20.409 [order-service] [http-nio-8082-exec-9] [664c5d40fdb8ab41390e70ff5e65eceb,390e70ff5e65eceb]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetching order: symbol=BTC
+2024-05-21 12:37:20.424 [order-service] [http-nio-8082-exec-9] [664c5d40fdb8ab41390e70ff5e65eceb,390e70ff5e65eceb]  WARN  com.exchange.order.config.feign.FeignErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price2/BTC, requestBody=null, body={"code":100000,"errorCode":"server_error","msg":null,"traceId":"664c5d40fdb8ab41390e70ff5e65eceb"}
+2024-05-21 12:37:20.440 [order-service] [http-nio-8082-exec-9] [664c5d40fdb8ab41390e70ff5e65eceb,390e70ff5e65eceb]  WARN  com.exchange.order.config.feign.FeignErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price2/BTC, requestBody=null, body={"code":100000,"errorCode":"server_error","msg":null,"traceId":"664c5d40fdb8ab41390e70ff5e65eceb"}
+2024-05-21 12:37:20.453 [order-service] [http-nio-8082-exec-9] [664c5d40fdb8ab41390e70ff5e65eceb,390e70ff5e65eceb]  INFO  com.exchange.order.service.impl.OrderServiceImpl - Fetched order: order=ConvertOrder(symbol=BTC, quantity=5.0, price=100.0, amount=500.0)
 
 # asset-service
-2024-05-20 13:31:52.546 [asset-service] [http-nio-8081-exec-3] [664b188846f92a418daaea35619bb796,9d3c5c7a5b3ae71c]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
-2024-05-20 13:31:52.548 [asset-service] [http-nio-8081-exec-3] [,]  ERROR o.a.c.c.C.[.[localhost].[/].[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.RuntimeException: server_error] with root cause
+2024-05-21 12:37:20.416 [asset-service] [http-nio-8081-exec-3] [664c5d40fdb8ab41390e70ff5e65eceb,6f2c61126785b970]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
+2024-05-21 12:37:20.419 [asset-service] [http-nio-8081-exec-3] [664c5d40fdb8ab41390e70ff5e65eceb,6f2c61126785b970]  ERROR c.e.a.config.RestResponseEntityExceptionHandler - Catch Exception: url=/asset/price2/BTC
 java.lang.RuntimeException: server_error
 	at com.exchange.asset.service.impl.PriceServiceImpl.throwRandomException(PriceServiceImpl.java:58)
 	at com.exchange.asset.service.impl.PriceServiceImpl.getPrice2(PriceServiceImpl.java:49)
-2024-05-20 13:31:52.569 [asset-service] [http-nio-8081-exec-4] [664b188846f92a418daaea35619bb796,a8faee3056c8456c]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
-2024-05-20 13:31:52.570 [asset-service] [http-nio-8081-exec-4] [,]  ERROR o.a.c.c.C.[.[localhost].[/].[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.RuntimeException: server_error] with root cause
+2024-05-21 12:37:20.416 [asset-service] [http-nio-8081-exec-3] [664c5d40fdb8ab41390e70ff5e65eceb,6f2c61126785b970]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
+2024-05-21 12:37:20.419 [asset-service] [http-nio-8081-exec-3] [664c5d40fdb8ab41390e70ff5e65eceb,6f2c61126785b970]  ERROR c.e.a.config.RestResponseEntityExceptionHandler - Catch Exception: url=/asset/price2/BTC
 java.lang.RuntimeException: server_error
 	at com.exchange.asset.service.impl.PriceServiceImpl.throwRandomException(PriceServiceImpl.java:58)
 	at com.exchange.asset.service.impl.PriceServiceImpl.getPrice2(PriceServiceImpl.java:49)
-2024-05-20 13:31:52.576 [asset-service] [http-nio-8081-exec-5] [664b188846f92a418daaea35619bb796,57f565c8e01f4118]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
-2024-05-20 13:31:52.576 [asset-service] [http-nio-8081-exec-5] [664b188846f92a418daaea35619bb796,57f565c8e01f4118]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetched price for: symbol=BTC, price=100.0
-
+2024-05-21 12:37:20.451 [asset-service] [http-nio-8081-exec-5] [664c5d40fdb8ab41390e70ff5e65eceb,34caaebdcdbef644]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
+2024-05-21 12:37:20.451 [asset-service] [http-nio-8081-exec-5] [664c5d40fdb8ab41390e70ff5e65eceb,34caaebdcdbef644]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetched price for: symbol=BTC, price=100.0
 ```
