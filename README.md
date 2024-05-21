@@ -120,3 +120,10 @@ java.lang.RuntimeException: server_error
 2024-05-21 12:37:20.451 [asset-service] [http-nio-8081-exec-5] [664c5d40fdb8ab41390e70ff5e65eceb,34caaebdcdbef644]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
 2024-05-21 12:37:20.451 [asset-service] [http-nio-8081-exec-5] [664c5d40fdb8ab41390e70ff5e65eceb,34caaebdcdbef644]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetched price for: symbol=BTC, price=100.0
 ```
+
+### Links
+This project is a part of spring cloud microservices that includes following projects:
+* [asset-service](https://github.com/dgaydukov/spring-cloud-asset-service) - provide asset price information
+* [order-service](https://github.com/dgaydukov/spring-cloud-order-service) - calls asset service to get the price
+* [external-gateway](https://github.com/dgaydukov/spring-cloud-external-gateway) - serve as gateway to forward requests from customers. You can call above 2 services from this gateway.
+* [cloud project docs](https://github.com/dgaydukov/spring-cloud-project?tab=readme-ov-file) - special repository with all documentation for intra-service communication
