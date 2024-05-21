@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 
 @Slf4j
-public class CustomErrorDecoder implements ErrorDecoder {
+public class FeignErrorDecoder implements ErrorDecoder {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override

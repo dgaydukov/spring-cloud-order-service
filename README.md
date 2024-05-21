@@ -77,7 +77,7 @@ curl -H 'content-type: application/json' http://localhost:8082/order/ABC
 2024-05-18 19:14:08.498 [order-service] [http-nio-8082-exec-2] [6648c5c00b41a2ca146f40c1dde12e7e,146f40c1dde12e7e]  WARN  c.exchange.order.config.feign.CustomErrorDecoder - Catch feign error: method=AssetFacade#getAsset(String), requestUrl=http://asset-service/asset/price/ABC, body={"code":100001,"errorCode":"price_not_found","msg":"Failed to fetch the price for ABC","traceId":"6648c5c00b41a2ca146f40c1dde12e7e"}
 2024-05-18 19:14:08.503 [order-service] [http-nio-8082-exec-2] [6648c5c00b41a2ca146f40c1dde12e7e,146f40c1dde12e7e]  ERROR c.e.o.config.RestResponseEntityExceptionHandler - catch AppException: url=/order/ABC
 com.exchange.order.exception.AppException: price_not_found
-	at com.exchange.order.config.feign.CustomErrorDecoder.decode(CustomErrorDecoder.java:34)
+	at com.exchange.order.config.feign.FeignErrorDecoder.decode(CustomErrorDecoder.java:34)
 
 # asset-service logs
 2024-05-18 19:14:08.490 [asset-service] [http-nio-8081-exec-7] [6648c5c00b41a2ca146f40c1dde12e7e,474b0abdecb8458b]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=ABC

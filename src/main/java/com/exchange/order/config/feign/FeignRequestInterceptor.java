@@ -10,7 +10,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Component
-class CustomRequestInterceptor implements RequestInterceptor {
+class FeignRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate template) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
