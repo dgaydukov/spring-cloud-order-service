@@ -1,4 +1,13 @@
-# Order-service
+# Order service
+
+### Content
+* [How to use](#how-to-use)
+* [I18n support](#i18n-support)
+* [Nacos env vars](#nacos-env-vars)
+* [Nacos config hot reload](#nacos-config-hot-reload)
+* [Returning traceId to customer](#returning-traceid-to-customer)
+* [Feign retry example](#feign-retry-example)
+* [Links](#links)
 
 ### How to use
 Below is example how you can call 2 API endpoints here
@@ -29,7 +38,7 @@ curl -H 'content-type: application/json' -H 'Accept-Language: es' http://localho
 {"code":100001,"errorCode":"price_not_found","msg":"No se pudo obtener el precio de BTC","traceId":"664c4c5ec5ccd48d0962891a035a3df6"}
 ```
 
-### Nacos config
+### Nacos env vars
 Make sure your nacos server is running and you pass it's IP into config variables. If you try to run
 this app without nacos config then it won't start.
 ```
