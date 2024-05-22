@@ -2,6 +2,7 @@ package com.exchange.order.config;
 
 import com.exchange.order.domain.AppError;
 import com.exchange.order.exception.AppException;
+import com.exchange.order.service.MessageTranslationService;
 import io.micrometer.tracing.Tracer;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final Tracer tracer;
-    private String getTraceId(){
+    private final MessageTranslationService messageTranslationService;
+
+    private String getTraceId() {
         if (tracer.currentSpan() != null && tracer.currentSpan().context() != null) {
             return tracer.currentSpan().context().traceId();
         }
@@ -27,10 +30,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler({Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public AppError AppError(HttpServletRequest request, Exception ex) {
+    public AppError handleException(HttpServletRequest request, Exception ex) {
         log.error("Catch Exception: url={}", request.getRequestURI(), ex);
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
-        return new AppError(errorCode.getCode(), errorCode.getErrorCode(), null, getTraceId());
+        String userMsg = messageTranslationService.getMessage(errorCode.getErrorCode());
+        return new AppError(errorCode.getCode(), errorCode.getErrorCode(), userMsg, getTraceId());
     }
 
 
