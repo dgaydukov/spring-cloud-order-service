@@ -15,11 +15,6 @@
   <property name="severity" value="warning"/>
 
   <property name="fileExtensions" value="java, properties, xml"/>
-  <!-- Excludes all 'module-info.java' files              -->
-  <!-- See https://checkstyle.org/filefilters/index.html -->
-  <module name="BeforeExecutionExclusionFileFilter">
-    <property name="fileNamePattern" value="module\-info\.java$"/>
-  </module>
   <!-- https://checkstyle.org/filters/suppressionfilter.html -->
   <module name="SuppressionFilter">
     <property name="file" value="${org.checkstyle.google.suppressionfilter.config}"
@@ -369,5 +364,6 @@
       <!-- The check is suppressed in the next line of code after the comment -->
       <property name="influenceFormat" value="1"/>
     </module>
+    <module name="CyclomaticComplexity"/>
   </module>
 </module>
