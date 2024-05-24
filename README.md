@@ -10,6 +10,8 @@
 * [Links](#links)
 
 ### How to use
+>Important: This service requires the nacos to be running first, otherwise it won't be able to start. Plz make sure you successfully run nacos locally through the docker, then you can run this app. You can read [how to run nacos locally](https://github.com/dgaydukov/spring-cloud-project)
+
 Below is example how you can call 2 API endpoints here
 ```shell
 # create new order
