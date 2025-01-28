@@ -7,6 +7,7 @@
 * [Nacos config hot reload](#nacos-config-hot-reload)
 * [Returning traceId to customer](#returning-traceid-to-customer)
 * [Feign retry example](#feign-retry-example)
+* [Test coverage](#test-coverage)
 * [Links](#links)
 
 ### How to use
@@ -131,6 +132,11 @@ java.lang.RuntimeException: server_error
 2024-05-21 12:37:20.451 [asset-service] [http-nio-8081-exec-5] [664c5d40fdb8ab41390e70ff5e65eceb,34caaebdcdbef644]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetching price for: symbol=BTC
 2024-05-21 12:37:20.451 [asset-service] [http-nio-8081-exec-5] [664c5d40fdb8ab41390e70ff5e65eceb,34caaebdcdbef644]  INFO  com.exchange.asset.service.impl.PriceServiceImpl - Fetched price for: symbol=BTC, price=100.0
 ```
+
+### Test coverage
+Testing is the most important thing when we develop apps. I stick to TDD where we first write tests and later add code that pass your tests. Here we have the following tests:
+* [OrderServiceTest](src/test/java/com/exchange/order/service/OrderServiceTest.java) - validate correct order execution
+* [MessageTranslationServiceTest](src/test/java/com/exchange/order/service/MessageTranslationServiceTest.java) - simple test to check that translation works as expected
 
 ### Links
 This project is a part of spring cloud microservices that includes following projects:
